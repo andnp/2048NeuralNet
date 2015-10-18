@@ -26,6 +26,11 @@ setTimeout(run, 500);
 var scores = [];
 var allMoves = [];
 
+var datEl = document.createElement("p");
+var cont = document.getElementsByClassName("container")[0];
+var body = document.getElementsByTagName("body")[0];
+body.insertBefore(datEl, cont);
+
 function run(){
     if(game.over){
     	learn(game.score, largestTile());
@@ -62,8 +67,9 @@ function run(){
     var allOuts = [];
     allOuts = allOuts.concat(getLast(emptyOuts), getLast(scoreOuts), getLast(lengthOuts), getLast(largeOuts), getLast(moveOuts), cells);
     var outputs = totalNet.fire(allOuts);
-    window.out = outputs[outputs.length - 1];
+    window.out = getLast(outputs);
     var out = window.out;
+    datEl.innerHTML = out;
     var moves = [];
     for(var i = 0; i < 4; i++){
 	   moves.push({i: i, val: out[i]});
