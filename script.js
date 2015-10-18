@@ -21,6 +21,7 @@ var lengthNet = new network([16, 8, 4]);
 var largeNet = new network([16, 16, 4]);
 var totalNet = new network([36, 18, 4]);
 var generation = 0;
+var illegal = 10;
 
 setTimeout(run, 500);
 var scores = [];
@@ -32,12 +33,14 @@ var body = document.getElementsByTagName("body")[0];
 body.insertBefore(datEl, cont);
 
 function run(){
-    if(game.over){
+    if(game.over || illegal == 0){
     	learn(game.score, largestTile());
+        illegal = 10;
     	console.log('-----------------------');
     	console.log("Num moves: ", allMoves.length);
     	console.log("gen: ", generation);
     	console.log("score: ", game.score);
+        console.log("illegal ", illegal);
     	allMoves = [];
     	scores.push(game.score);
     	var avg = 0;
@@ -101,25 +104,29 @@ function run(){
     scoreNet.learn(scoreDesired, scoreOuts);
     moveNet.learn(moveDesired, moveOuts);
 
+    if(!moved(temp, cells)){
+        illegal--;
+    }
+
     allMoves.push({dir: dir, outputs: outputs, lengthOuts: lengthOuts, largeOuts: largeOuts});
     setTimeout(run,0);
 }
 
 function learn(score, largest){
     for(var i = 0; i < allMoves.length; i++){
-	var move = allMoves[i];
-	var totalScoreComp = (Math.log2(score) / 8) - 1;
-	var largestComp = (Math.log2(largest) / 8) - 1;
-	var numMoves = (allMoves.length / 200) - 1;
-	var desired = [0,0,0,0];
-	var lengthDesired = [0,0,0,0];
-	var largeDesired = [0,0,0,0];
-	largeDesired[move.dir] = largestComp;
-	lengthDesired[move.dir] = numMoves;
-	desired[move.dir] = totalScoreComp;
-	largeNet.learn(largeDesired, move.largeOuts);
-	lengthNet.learn(lengthDesired, move.lengthOuts);
-	totalNet.learn(desired, move.outputs);
+    	var move = allMoves[i];
+    	var totalScoreComp = (Math.log2(score) / 8) - 1;
+    	var largestComp = (Math.log2(largest) / 8) - 1;
+    	var numMoves = (allMoves.length / 200) - 1;
+    	var desired = [0,0,0,0];
+    	var lengthDesired = [0,0,0,0];
+    	var largeDesired = [0,0,0,0];
+    	largeDesired[move.dir] = largestComp;
+    	lengthDesired[move.dir] = numMoves;
+    	desired[move.dir] = totalScoreComp;
+    	largeNet.learn(largeDesired, move.largeOuts);
+    	lengthNet.learn(lengthDesired, move.lengthOuts);
+    	totalNet.learn(desired, move.outputs);
     }
 }
 
