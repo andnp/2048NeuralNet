@@ -13,50 +13,44 @@
 
 var game = new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
 game.restart();
-//var LEFT = 3, UP = 0, RIGHT = 1, DOWN = 2;
 
+var moveNet = new network([16, 4]);
 var emptyNet = new network([16, 4]);
 var scoreNet = new network([16, 8, 4]);
 var lengthNet = new network([16, 8, 4]);
 var largeNet = new network([16, 16, 4]);
-var totalNet = new network([32, 18, 4]);
+var totalNet = new network([36, 18, 4]);
 var generation = 0;
 
-//setTimeout(function(){
-//    for(var i = 0; i < 100; i++){
-//        run();
-//    }
-//}, 1000);
 setTimeout(run, 500);
 var scores = [];
-
 var allMoves = [];
 
 function run(){
     if(game.over){
-	learn(game.score, largestTile());
-	console.log('-----------------------');
-	console.log("Num moves: ", allMoves.length);
-	console.log("gen: ", generation);
-	console.log("score: ", game.score);
-	allMoves = [];
-	scores.push(game.score);
-	var avg = 0;
-	var rollingAvg = 0;
-	for(var i = 0; i < scores.length; i++){
-	    avg += scores[i];
-	}
-	for(var i = scores.length - 1; i >= scores.length - 20 && i >= 0; i--){
-	    rollingAvg += scores[i];
-	}
-	console.log("avg: ", avg / scores.length);
-	console.log("roll avg: ", rollingAvg / 20);
-	game.restart();
-	generation++;
-	if(generation == 250000) {
-	    alert(scores);
-	    return;
-	}
+    	learn(game.score, largestTile());
+    	console.log('-----------------------');
+    	console.log("Num moves: ", allMoves.length);
+    	console.log("gen: ", generation);
+    	console.log("score: ", game.score);
+    	allMoves = [];
+    	scores.push(game.score);
+    	var avg = 0;
+    	var rollingAvg = 0;
+    	for(var i = 0; i < scores.length; i++){
+    	    avg += scores[i];
+    	}
+    	for(var i = scores.length - 1; i >= scores.length - 20 && i >= 0; i--){
+    	    rollingAvg += scores[i];
+    	}
+    	console.log("avg: ", avg / scores.length);
+    	console.log("roll avg: ", rollingAvg / 20);
+    	game.restart();
+    	generation++;
+    	if(generation == 250000) {
+    	    alert(scores);
+    	    return;
+    	}
     }
     var startScore = game.score;
     var cells = getValues();
@@ -64,44 +58,42 @@ function run(){
     var scoreOuts = scoreNet.fire(cells);
     var lengthOuts = lengthNet.fire(cells);
     var largeOuts = largeNet.fire(cells);
+    var moveOuts = moveNet.fire(cells);
     var allOuts = [];
-    allOuts = allOuts.concat(emptyOuts[emptyOuts.length - 1], scoreOuts[scoreOuts.length - 1], lengthOuts[lengthOuts.length - 1], largeOuts[largeOuts.length - 1], cells);
+    allOuts = allOuts.concat(getLast(emptyOuts), getLast(scoreOuts), getLast(lengthOuts), getLast(largeOuts), getLast(moveOuts), cells);
     var outputs = totalNet.fire(allOuts);
     window.out = outputs[outputs.length - 1];
     var out = window.out;
     var moves = [];
     for(var i = 0; i < 4; i++){
-	moves.push({i: i, val: out[i]});
+	   moves.push({i: i, val: out[i]});
     }
     var sortedOut = moves.sort(function(a, b){
-	return b.val - a.val;
+	   return b.val - a.val;
     });
 
     var temp = cells;
-    var i = 0;
     var dir = 0;
-    while(!moved(cells, temp)){
-	dir = sortedOut[i].i;
+	dir = sortedOut[0].i;
 	game.move(dir);
-	i++;
 	temp = getValues();
-    }
     var endScore = game.score;
     var diffScore = endScore - startScore;
-
-    var scoreComp = (diffScore / 60) - 1;
 
     var desired = [0,0,0,0];
     var emptyDesired = [0,0,0,0];
     var scoreDesired = [0,0,0,0];
+    var moveDesired = getLast(moveOuts);
 
+    var scoreComp = (diffScore / 60) - 1;
     var emptyTilesComp = (getEmptyTiles(temp).length / 4) - 1;
 
     emptyDesired[dir] = emptyTilesComp;
     scoreDesired[dir] = scoreComp;
-    //console.log(outputs[outputs.length - 1]);
+    moveDesired[dir] = moved(temp, cells) ? 1 : -1;
     emptyNet.learn(emptyDesired, emptyOuts);
     scoreNet.learn(scoreDesired, scoreOuts);
+    moveNet.learn(moveDesired, moveOuts);
 
     allMoves.push({dir: dir, outputs: outputs, lengthOuts: lengthOuts, largeOuts: largeOuts});
     setTimeout(run,0);
@@ -135,7 +127,7 @@ function getEmptyTiles(tiles){
 
 function moved(prev, cur){
     for(var i = 0; i < 16; i++){
-	if(prev[i] != cur[i]) return true;
+	   if(prev[i] != cur[i]) return true;
     }
     return false;
 }
@@ -163,4 +155,8 @@ function getValues(){
 	ret[i] = temp < 0 ? 0 : temp;
     }
     return ret;
+}
+
+function getLast(arr){
+    return arr[arr.length - 1];
 }
