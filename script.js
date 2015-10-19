@@ -35,12 +35,12 @@ body.insertBefore(datEl, cont);
 function run(){
     if(game.over || illegal == 0){
     	learn(game.score, largestTile());
-        illegal = 10;
     	console.log('-----------------------');
     	console.log("Num moves: ", allMoves.length);
     	console.log("gen: ", generation);
     	console.log("score: ", game.score);
         console.log("illegal ", illegal);
+        illegal = 10;
     	allMoves = [];
     	scores.push(game.score);
     	var avg = 0;
