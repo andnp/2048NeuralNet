@@ -27,10 +27,18 @@ setTimeout(run, 500);
 var scores = [];
 var allMoves = [];
 
-var datEl = document.createElement("p");
+var datEl0 = document.createElement("p");
+var datEl1 = document.createElement("p");
+var datEl2 = document.createElement("p");
+var datEl3 = document.createElement("p");
 var cont = document.getElementsByClassName("container")[0];
 var body = document.getElementsByTagName("body")[0];
-body.insertBefore(datEl, cont);
+body.insertBefore(datEl0, cont);
+body.insertBefore(datEl1, cont);
+body.insertBefore(datEl2, cont);
+body.insertBefore(datEl3, cont);
+
+
 
 function run(){
     if(game.over || illegal == 0){
@@ -72,7 +80,10 @@ function run(){
     var outputs = totalNet.fire(allOuts);
     window.out = getLast(outputs);
     var out = window.out;
-    datEl.innerHTML = out;
+    datEl0.innerHTML = out[0];
+    datEl1.innerHTML = out[1];
+    datEl2.innerHTML = out[2];
+    datEl3.innerHTML = out[3];
     var moves = [];
     for(var i = 0; i < 4; i++){
 	   moves.push({i: i, val: out[i]});
