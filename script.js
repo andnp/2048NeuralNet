@@ -115,6 +115,7 @@ function run(){
 function learn(score, largest){
     for(var i = 0; i < allMoves.length; i++){
     	var move = allMoves[i];
+        score = score ? score : 1;
     	var totalScoreComp = (Math.log2(score) / 8) - 1;
     	var largestComp = (Math.log2(largest) / 8) - 1;
     	var numMoves = (allMoves.length / 200) - 1;
