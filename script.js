@@ -14,12 +14,12 @@
 var game = new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
 game.restart();
 
-var moveNet = new network([16, 4]);
-var emptyNet = new network([16, 4]);
-var scoreNet = new network([16, 8, 4]);
-var lengthNet = new network([16, 8, 4]);
-var largeNet = new network([16, 16, 4]);
-var totalNet = new network([36, 18, 4]);
+var moveNet = new network([16, 4], .2);
+var emptyNet = new network([16, 4], .2);
+var scoreNet = new network([16, 8, 4], .2);
+var lengthNet = new network([16, 8, 4], .1);
+var largeNet = new network([16, 16, 4], .1);
+var totalNet = new network([36, 18, 4], .1);
 var generation = 0;
 var illegal = 20;
 
