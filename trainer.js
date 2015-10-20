@@ -14,7 +14,7 @@
 var game = new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
 game.restart();
 
-var moveNet = new network([16, 4]);
+var moveNet = new network([16, 4], .1);
 var generation = 0;
 
 setTimeout(run, 500);
@@ -35,9 +35,7 @@ body.insertBefore(datEl3, cont);
 
 function run(){
     if(game.over){
-    	learn(game.score, largestTile());
     	console.log('-----------------------');
-    	console.log("Num moves: ", allMoves.length);
     	console.log("gen: ", generation);
     	console.log("score: ", game.score);
     	scores.push(game.score);
@@ -54,7 +52,8 @@ function run(){
     	game.restart();
     	generation++;
     	if(generation == 250000) {
-    	    alert(scores);
+    	    console.log(moveNet.export());
+            console.log(moveNet);
     	    return;
     	}
     }
