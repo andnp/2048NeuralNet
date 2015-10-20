@@ -59,7 +59,8 @@ function run(){
     	}
     }
     var cells = getValues();
-    var out = moveNet.fire(cells);
+    var outputs = moveNet.fire(cells);
+    var out = getLast(outputs);
 
     datEl0.innerHTML = out[0];
     datEl1.innerHTML = out[1];
@@ -80,9 +81,9 @@ function run(){
 	temp = getValues();
 
     var scoreDesired = [0,0,0,0];
-    var moveDesired = getLast(moveOuts);
+    var moveDesired = getLast(outputs);
     moveDesired[dir] = moved(temp, cells) ? 1 : -1;
-    moveNet.learn(moveDesired, moveOuts);
+    moveNet.learn(moveDesired, outputs);
 
     setTimeout(run,0);
 }
