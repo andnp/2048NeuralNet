@@ -20,6 +20,7 @@ var scoreNet = new network([16, 8, 4], .2);
 var lengthNet = new network([16, 8, 4], .1);
 var largeNet = new network([16, 16, 4], .1);
 var totalNet = new network([36, 18, 4], .1);
+console.log(totalNet.c);
 var generation = 0;
 var illegal = 20;
 
