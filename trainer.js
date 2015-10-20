@@ -34,7 +34,7 @@ body.insertBefore(datEl3, cont);
 
 
 function run(){
-    if(game.over || illegal == 0){
+    if(game.over){
     	learn(game.score, largestTile());
     	console.log('-----------------------');
     	console.log("Num moves: ", allMoves.length);
