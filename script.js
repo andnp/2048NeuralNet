@@ -21,7 +21,7 @@ var lengthNet = new network([16, 8, 4]);
 var largeNet = new network([16, 16, 4]);
 var totalNet = new network([36, 18, 4]);
 var generation = 0;
-var illegal = 10;
+var illegal = 20;
 
 setTimeout(run, 500);
 var scores = [];
@@ -48,7 +48,7 @@ function run(){
     	console.log("gen: ", generation);
     	console.log("score: ", game.score);
         console.log("illegal ", illegal);
-        illegal = 10;
+        illegal = 20;
     	allMoves = [];
     	scores.push(game.score);
     	var avg = 0;
