@@ -59,7 +59,7 @@ function run(){
     	}
     }
     var cells = getValues();
-    var outs = moveNet.fire(cells);
+    var out = moveNet.fire(cells);
 
     datEl0.innerHTML = out[0];
     datEl1.innerHTML = out[1];
