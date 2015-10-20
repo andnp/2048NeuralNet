@@ -15,6 +15,7 @@ var game = new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageMa
 game.restart();
 
 var moveNet = new network([16, 4], .5);
+console.log(moveNet.c);
 var generation = 0;
 
 setTimeout(run, 500);
