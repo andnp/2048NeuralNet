@@ -50,7 +50,7 @@ function run(){
     game.move(action);
     var endScore = game.score;
     var scoreDif = endScore - startScore ? endScore - startScore : 1;
-    var reward = (Math.log2(scoreDif) / 11) > 1 ? 1 : (Math.log2(scoreDif) / 11);
+    var reward = scoreDif / largestTile() > 1 ? 1 : (Math.log2(scoreDif) / 11);
 
 	var event = new Event('done' + brain.age);
 	setTimeout(function(){
