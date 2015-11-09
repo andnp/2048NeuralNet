@@ -9,14 +9,18 @@ var scores = [];
 var datEl0 = document.createElement("p");
 var datEl1 = document.createElement("p");
 var datEl2 = document.createElement("p");
+var speedEl = document.createElement("input");
 var cont = document.getElementsByClassName("container")[0];
 var body = document.getElementsByTagName("body")[0];
 body.insertBefore(datEl0, cont);
 body.insertBefore(datEl1, cont);
 body.insertBefore(datEl2, cont);
+body.insertBefore(speedEl, cont);
 
 var moves = 0;
 var generation = 0;
+
+window.speed = 10000;
 
 function run(){
     if(game.over){
@@ -47,20 +51,23 @@ function run(){
     var endScore = game.score;
     var scoreDif = endScore - startScore ? endScore - startScore : 1;
     var reward = (Math.log2(scoreDif) / 11) > 1 ? 1 : (Math.log2(scoreDif) / 11);
-    brain.backward(reward);
 
-    var exp = brain.experiences;
-    var countRand = 0;
-    for(var i = 0; i < exp.length; i++){
-    	if(exp[i].random) countRand++;
-    }
-    var countTotal = exp.length;
-    datEl0.innerHTML = moves++;
-    datEl1.innerHTML = countTotal;
-    datEl2.innerHTML = countRand;
-    var speed = 0;
+	var event = new Event('done' + brain.age);
+	setTimeout(function(){
+		brain.backward(reward);
+		document.dispatchEvent(event);
+	}, window.speed / 2);
 
-    setTimeout(run,speed);
+	document.addEventListener('done' + brain.age, function(){
+		var exp = brain.experiences;
+	    var countTotal = exp.length;
+	    datEl0.innerHTML = moves++;
+	    datEl1.innerHTML = countTotal;
+
+	    document.removeEventListener('done' + brain.age);
+
+	    setTimeout(run,window.speed / 2);
+	});
 }
 
 function shuffle(array) {
