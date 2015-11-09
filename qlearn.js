@@ -49,8 +49,10 @@ function run(){
     var action = brain.forward(getValues());
     game.move(action);
     var endScore = game.score;
-    var scoreDif = endScore - startScore ? endScore - startScore : 1;
-    var reward = scoreDif / largestTile() > 1 ? 1 : (Math.log2(scoreDif) / 11);
+    var scoreDif = endScore - startScore ? endScore - startScore : 0;
+    var reward = scoreDif / (1.25 *largestTile()) > 1 ? 1 : scoreDif / (largestTile() * 1.25);
+    console.log(reward);
+    if(game.over) reward = 0;
 
 	var event = new Event('done' + brain.age);
 	setTimeout(function(){
